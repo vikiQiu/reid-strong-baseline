@@ -13,6 +13,7 @@ from ignite.engine import Engine
 
 from utils.reid_metric import R1_mAP, R1_mAP_reranking
 from utils.utils import check_dir_exists
+from data.datasets.eval_reid import eval_func_with_plot
 
 
 def create_supervised_evaluator(model, metrics,
@@ -61,7 +62,7 @@ def inference(
     logger.info("Enter inferencing")
     if cfg.TEST.RE_RANKING == 'no':
         print("Create evaluator")
-        evaluator = create_supervised_evaluator(model, metrics={'r1_mAP': R1_mAP(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM)},
+        evaluator = create_supervised_evaluator(model, metrics={'r1_mAP': R1_mAP(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM, fun=eval_func_with_plot)},
                                                 device=device)
     elif cfg.TEST.RE_RANKING == 'yes':
         print("Create evaluator for reranking")

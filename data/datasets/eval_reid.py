@@ -35,7 +35,7 @@ def eval_func(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50):
         # compute cmc curve
         # binary vector, positions with value 1 are correct matches
         orig_cmc = matches[q_idx][keep]
-        print(orig_cmc)
+        # print(orig_cmc)
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
@@ -72,12 +72,14 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
         max_rank = num_g
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
+    print(indices.shape)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
 
     # compute cmc curve for each query
     all_cmc = []
     all_AP = []
     num_valid_q = 0.  # number of valid query
+    bad_case, good_case = [], []
     for q_idx in range(num_q):
         # get query pid and camid
         q_pid = q_pids[q_idx]
@@ -86,7 +88,7 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
         # remove gallery samples that have the same pid and camid with query
         order = indices[q_idx]
         remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        print(q_idx, remove)
+        # print(q_idx, remove)
         keep = np.invert(remove)
 
         # compute cmc curve
@@ -95,6 +97,11 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
+
+        if sum(orig_cmc[:3]) == 3:
+            tmp = indices[q_idx][keep][:3]
+            bad_case.append([q_idx]+tmp)
+            print(q_pid[q_idx], g_pids[tmp])
 
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
