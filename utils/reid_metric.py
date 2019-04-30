@@ -13,11 +13,12 @@ from .re_ranking import re_ranking
 
 
 class R1_mAP(Metric):
-    def __init__(self, num_query, max_rank=50, feat_norm='yes'):
+    def __init__(self, num_query, max_rank=50, feat_norm='yes', fun=eval_func):
         super(R1_mAP, self).__init__()
         self.num_query = num_query
         self.max_rank = max_rank
         self.feat_norm = feat_norm
+        self.fun = fun
 
     def reset(self):
         self.feats = []
@@ -48,17 +49,18 @@ class R1_mAP(Metric):
                   torch.pow(gf, 2).sum(dim=1, keepdim=True).expand(n, m).t()
         distmat.addmm_(1, -2, qf, gf.t())
         distmat = distmat.cpu().numpy()
-        cmc, mAP = eval_func(distmat, q_pids, g_pids, q_camids, g_camids)
+        cmc, mAP = self.fun(distmat, q_pids, g_pids, q_camids, g_camids)
 
         return cmc, mAP
 
 
 class R1_mAP_reranking(Metric):
-    def __init__(self, num_query, max_rank=50, feat_norm='yes'):
+    def __init__(self, num_query, max_rank=50, feat_norm='yes', fun=eval_func):
         super(R1_mAP_reranking, self).__init__()
         self.num_query = num_query
         self.max_rank = max_rank
         self.feat_norm = feat_norm
+        self.fun = fun
 
     def reset(self):
         self.feats = []
@@ -92,6 +94,6 @@ class R1_mAP_reranking(Metric):
         # distmat = distmat.cpu().numpy()
         print("Enter reranking")
         distmat = re_ranking(qf, gf, k1=20, k2=6, lambda_value=0.3)
-        cmc, mAP = eval_func(distmat, q_pids, g_pids, q_camids, g_camids)
+        cmc, mAP = self.fun(distmat, q_pids, g_pids, q_camids, g_camids)
 
         return cmc, mAP
