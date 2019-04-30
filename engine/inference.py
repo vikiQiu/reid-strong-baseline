@@ -71,14 +71,15 @@ def inference(
     else:
         print("Unsupported re_ranking config. Only support for no or yes, but got {}.".format(cfg.TEST.RE_RANKING))
 
-    evaluator.run(val_loader)
-    print('get_metrics')
-    cmc, mAP, good_case = evaluator.state.metrics['r1_mAP']
-    plot(val_loader, 'good_case', good_case, add=num_query)
-    logger.info('Validation Results')
-    logger.info("mAP: {:.1%}".format(mAP))
-    for r in [1, 5, 10]:
-        logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
+    plot(val_loader, 'good_case', [[16843, 3918, 6980], [7005, 4783, 15962]], add=num_query)
+    # evaluator.run(val_loader)
+    # print('get_metrics')
+    # cmc, mAP, good_case = evaluator.state.metrics['r1_mAP']
+    # plot(val_loader, 'good_case', good_case, add=num_query)
+    # logger.info('Validation Results')
+    # logger.info("mAP: {:.1%}".format(mAP))
+    # for r in [1, 5, 10]:
+    #     logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
         
         
 def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]], add=0):
@@ -90,6 +91,6 @@ def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]], add=0):
         imgs = []
         for j in range(len(inds[i])):
             tmp = 0 if j == 0 else add
-            imgs.append(ds[inds[i][j+tmp]][0])
+            imgs.append(ds[inds[i][j]+tmp][0])
         # imgs = torch.Tensor(imgs)
         save_image(imgs, os.path.join(d, 'img_%d.jpg' % (i)))
