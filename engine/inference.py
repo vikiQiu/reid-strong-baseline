@@ -87,4 +87,4 @@ def plot(data_loader, inds=[[1,2,3],[1,4,5]]):
 
     for i in range(len(inds)):
         for j in range(len(inds[i])):
-            save_image(ds[inds[i][j]], os.path.join(d, 'img_%d_%d.jpg' % (i, j)))
+            save_image(ds[inds[i][j]][0], os.path.join(d, 'img_%d_%d.jpg' % (i, j)))
