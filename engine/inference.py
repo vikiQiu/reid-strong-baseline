@@ -74,14 +74,14 @@ def inference(
     evaluator.run(val_loader)
     print('get_metrics')
     cmc, mAP, good_case = evaluator.state.metrics['r1_mAP']
-    plot(val_loader, 'good_case', good_case)
+    plot(val_loader, 'good_case', good_case, add=num_query)
     logger.info('Validation Results')
     logger.info("mAP: {:.1%}".format(mAP))
     for r in [1, 5, 10]:
         logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
         
         
-def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]]):
+def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]], add=0):
     ds = data_loader.dataset
     d = os.path.join('output', d_name)
     check_dir_exists([d])
@@ -89,6 +89,7 @@ def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]]):
     for i in range(len(inds)):
         imgs = []
         for j in range(len(inds[i])):
-            imgs.append(ds[inds[i][j]][0])
+            tmp = 0 if j == 0 else add
+            imgs.append(ds[inds[i][j+tmp]][0])
         # imgs = torch.Tensor(imgs)
         save_image(imgs, os.path.join(d, 'img_%d.jpg' % (i)))
