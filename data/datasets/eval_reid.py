@@ -72,7 +72,7 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
         max_rank = num_g
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
-    print(indices.shape)
+    print('distmat shape:', indices.shape, ';\nq_pid:', q_pids.shape, ';\ng_pid:', g_pids.shape)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
 
     # compute cmc curve for each query
@@ -100,6 +100,7 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
 
         if sum(orig_cmc[:3]) == 3:
             tmp = indices[q_idx][keep][:3]
+            print(tmp)
             bad_case.append([q_idx]+tmp)
             print(q_pid[q_idx], g_pids[tmp])
 
