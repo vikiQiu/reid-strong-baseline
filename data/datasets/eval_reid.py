@@ -100,9 +100,9 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
 
         if sum(orig_cmc[:3]) == 3:
             tmp = indices[q_idx][keep][:3]
-            print(tmp)
-            bad_case.append([q_idx]+tmp)
-            print(q_pid[q_idx], g_pids[tmp])
+            # print(tmp)
+            good_case.append([q_idx]+tmp)
+            print(q_pids[q_idx], g_pids[tmp], good_case[-1])
 
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
@@ -125,4 +125,4 @@ def eval_func_with_plot(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50
     all_cmc = all_cmc.sum(0) / num_valid_q
     mAP = np.mean(all_AP)
 
-    return all_cmc, mAP
+    return all_cmc, mAP, good_case

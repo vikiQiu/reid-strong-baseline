@@ -73,16 +73,17 @@ def inference(
 
     evaluator.run(val_loader)
     print('get_metrics')
-    cmc, mAP = evaluator.state.metrics['r1_mAP']
+    cmc, mAP, good_case = evaluator.state.metrics['r1_mAP']
+    plot(val_loader, 'good_case', good_case)
     logger.info('Validation Results')
     logger.info("mAP: {:.1%}".format(mAP))
     for r in [1, 5, 10]:
         logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
         
         
-def plot(data_loader, inds=[[1,2,3],[1,4,5]]):
+def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]]):
     ds = data_loader.dataset
-    d = 'output'
+    d = os.path.join('output', d_name)
     check_dir_exists([d])
 
     for i in range(len(inds)):
