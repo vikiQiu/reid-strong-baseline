@@ -1,6 +1,6 @@
 MODEL:
   PRETRAIN_CHOICE: 'imagenet'
-  PRETRAIN_PATH: '/home/haoluo/.torch/models/resnet50-19c8e357.pth'
+  PRETRAIN_PATH: '/home/qiuwenqing/.torch/models/resnet50-19c8e357.pth'
   METRIC_LOSS_TYPE: 'triplet'
   IF_LABELSMOOTH: 'on'
   IF_WITH_CENTER: 'no'
@@ -58,10 +58,10 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 128
   RE_RANKING: 'no'
-  WEIGHT: "path"
+  WEIGHT: "/unsullied/sharefs/qiuwenqing/isilon-home/project/others/reid-strong-baseline/Opensource_test/market1501/Experiment-all-tricks-256x128-bs16x4-warmup10-erase0_5-labelsmooth_on-laststride1-bnneck_on/resnet50_model_120.pth"
   NECK_FEAT: 'after'
   FEAT_NORM: 'yes'
 
-OUTPUT_DIR: "/home/haoluo/log/gu/reid_baseline_review/Opensource_test/market1501/Experiment-all-tricks-256x128-bs16x4-warmup10-erase0_5-labelsmooth_on-laststride1-bnneck_on"
+OUTPUT_DIR: "/unsullied/sharefs/qiuwenqing/isilon-home/project/others/reid-strong-baseline/Opensource_test/market1501/Experiment-all-tricks-256x128-bs16x4-warmup10-erase0_5-labelsmooth_on-laststride1-bnneck_on"
 
 
