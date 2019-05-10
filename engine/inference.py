@@ -10,10 +10,12 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from ignite.engine import Engine
+import torchvision.transforms as T
 
 from utils.reid_metric import R1_mAP, R1_mAP_reranking
 from utils.utils import check_dir_exists
 from data.datasets.eval_reid import eval_func_with_plot
+from data.datasets import init_dataset, ImageDataset
 
 
 def create_supervised_evaluator(model, metrics,
@@ -71,7 +73,10 @@ def inference(
     else:
         print("Unsupported re_ranking config. Only support for no or yes, but got {}.".format(cfg.TEST.RE_RANKING))
 
-    plot(val_loader, 'good_case', [[16843, 3918, 6980], [7005, 4783, 15962]], add=num_query)
+    dataset = init_dataset(cfg.DATASETS.NAMES, root=cfg.DATASETS.ROOT_DIR)
+    transform = T.Compose([T.ToTensor()])
+    val_dataset = ImageDataset(dataset.query + dataset.gallery, transform)
+    plot(val_dataset, 'good_case', [[16843, 3918, 6980], [7005, 4783, 15962]])
     # evaluator.run(val_loader)
     # print('get_metrics')
     # cmc, mAP, good_case = evaluator.state.metrics['r1_mAP']
@@ -82,8 +87,7 @@ def inference(
     #     logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
         
         
-def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]], add=0):
-    ds = data_loader.dataset
+def plot(ds, d_name, inds=[[1,2,3],[1,4,5]], add=0):
     d = os.path.join('output', d_name)
     check_dir_exists([d])
 
@@ -92,5 +96,4 @@ def plot(data_loader, d_name, inds=[[1,2,3],[1,4,5]], add=0):
         for j in range(len(inds[i])):
             tmp = 0 if j == 0 else add
             imgs.append(ds[inds[i][j]+tmp][0])
-        # imgs = torch.Tensor(imgs)
         save_image(imgs, os.path.join(d, 'img_%d.jpg' % (i)))
